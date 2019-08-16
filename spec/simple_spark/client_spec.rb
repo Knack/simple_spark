@@ -76,6 +76,10 @@ describe SimpleSpark::Client do
         specify { expect(client.message_events.class).to eq(SimpleSpark::Endpoints::MessageEvents) }
       end
 
+      context 'events' do
+        specify { expect(client.events.class).to eq(SimpleSpark::Endpoints::Events) }
+      end
+
       context 'relay_webhooks' do
         specify { expect(client.relay_webhooks.class).to eq(SimpleSpark::Endpoints::RelayWebhooks) }
       end
@@ -94,6 +98,10 @@ describe SimpleSpark::Client do
 
       context 'webhooks' do
         specify { expect(client.webhooks.class).to eq(SimpleSpark::Endpoints::Webhooks) }
+      end
+
+      context 'recipient_lists' do
+        specify { expect(client.recipient_lists.class).to eq(SimpleSpark::Endpoints::RecipientLists) }
       end
 
     end

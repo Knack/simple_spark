@@ -2,13 +2,9 @@
 
 [![Build Status](https://travis-ci.org/leadmachineapp/simple_spark.png?branch=master)](https://travis-ci.org/leadmachineapp/simple_spark) [![Gem Version](https://badge.fury.io/rb/simple_spark.svg)](https://badge.fury.io/rb/simple_spark)
 
-## Update from SparkPost
+## What?
 
-Posted in the SparkPost Announcements channel on 17th May 2016
-
-> Due to incredible support and contributions from the community, we will be discontinuing support of the official SparkPost ruby client library as of May 17, 2016.
-
-As SparkPost have now stopped development on their own gem, and have recommended this one as being a better alternative, bumping version to 1.0.0 - the code has been running in production for a while now and seems stable and near feature complete.
+The simplest and cleanest way to access the SparkPost API from Ruby or from Rails.
 
 ## Installation
 
@@ -34,7 +30,7 @@ $ gem install simple_spark
 
 ### Why?
 
-The official gem was somewhat lacking in functionality, though with the demise of Mandrill it seems SparkPost decided to restart development on it, they have now abandoned that as of 17th May 2016
+The official gem was somewhat lacking in functionality, though with the demise of Mandrill it seems SparkPost decided to restart development on it, they abandoned that as of 17th May 2016
 
 As we would have to write wrappers around all the functions we would need for our app to use SparkPost anyway, it seemed much easier to write the wrapper as a gem and allow others to use it too.
 
@@ -298,7 +294,7 @@ Create a new Transmission
 properties = {
   options: { open_tracking: true, click_tracking: true },
   campaign_id: 'christmas_campaign',
-  return_path: 'bounces-christmas-campaign@sp.neekme.com',
+  return_path: 'bounces-christmas-campaign@sp.yourdomain.com',
   metadata: {user_type: 'students'},
   substitution_data: { sender: 'Big Store Team' },
   recipients:  [
@@ -312,8 +308,10 @@ properties = {
     reply_to: 'Sales <sales@yourdomain.com>',
     headers: { 'X-Customer-CampaignID' => 'christmas_campaign' },
     text: 'Hi from {{sender}} ... this is a test, and here is your address {{address}}',
-    html: '<p>Hi from {{sender}}</p<p>This is a test</p>'
+    html: '<p>Hi from {{sender}}</p><p>This is a test</p>'
   }
+  # Or to use a template, change the content key to be:
+  # content: { template_id: 'first-template-id' }
 }
 
 simple_spark.transmissions.create(properties)
@@ -425,6 +423,34 @@ simple_spark.message_events.search(campaign_ids: 'christmas-campaign, summer-cam
 ```
 
 <a href="https://developers.sparkpost.com/api/#/reference/message-events/events-samples" target="_blank">see SparkPost API Documentation</a>
+
+### Events
+
+#### Samples
+
+List an example of the event data that will be included in a response from the Events search endpoint
+
+```ruby
+simple_spark.events.samples
+```
+
+To limit to just some events
+
+```ruby
+simple_spark.events.samples('bounce')
+```
+
+<a href="https://developers.sparkpost.com/api/events/#events-get-events-samples" target="_blank">see SparkPost API Documentation</a>
+
+#### Search
+
+Perform a filtered search for event data. The response is sorted by descending timestamp. For full options you should consult the SparkPost API documentation
+
+```ruby
+simple_spark.events.search(campaign_ids: 'christmas-campaign, summer-campaign')
+```
+
+<a href="https://developers.sparkpost.com/api/events/#events-get-events-samples" target="_blank">see SparkPost API Documentation</a>
 
 ### Webhooks
 
@@ -805,7 +831,82 @@ simple_spark.templates.delete(yourtemplateid)
 
 <a href="https://developers.sparkpost.com/api/#/reference/templates/delete" target="_blank">see SparkPost API Documentation</a>
 
+### Recipient Lists
+
+#### List
+
+List all recipient lists
+
+```ruby
+simple_spark.recipient_lists.list
+```
+
+<a href="https://developers.sparkpost.com/api/recipient-lists/#recipient-lists-get-list-all-recipient-lists" target="_blank">see SparkPost API Documentation</a>
+
+#### Create
+
+Create a new Recipient list
+
+```ruby
+properties = { "name" => "Small List",
+               "recipients"=> [
+                 {
+                   "address" => {
+                     "email" => "somemail@somedomain.com"
+                   }
+                 }
+               ]
+             }
+num_rcpt_errors = 1
+simple_spark.recipient_lists.create(properties, num_rcpt_errors)
+```
+
+<a href="https://developers.sparkpost.com/api/recipient-lists/#recipient-lists-post-create-a-recipient-list" target="_blank">see SparkPost API Documentation</a>
+
+#### Retrieve
+
+Retrieves a Recipient list by its ID
+
+```ruby
+show_recipients = true
+simple_spark.recipient_lists.retrieve(your_list_id, show_recipients)
+```
+
+<a href="https://developers.sparkpost.com/api/recipient-lists/#recipient-lists-get-retrieve-a-recipient-list" target="_blank">see SparkPost API Documentation</a>
+
+#### Update
+
+Updates a Recipient list with new values
+
+```ruby
+properties = { "name" => "New List Name" }
+simple_spark.recipient_lists.update(your_list_id, properties)
+```
+
+<a href="https://developers.sparkpost.com/api/recipient-lists/#recipient-lists-put-update-a-recipient-list" target="_blank">see SparkPost API Documentation</a>
+
+#### Delete
+
+Deletes a Recipient list permanently
+
+```ruby
+simple_spark.recipient_lists.delete(your_list_id)
+```
+
+<a href="https://developers.sparkpost.com/api/recipient-lists/#recipient-lists-delete-delete-a-recipient-list" target="_blank">see SparkPost API Documentation</a>
+
+
 ## Changelog
+
+### 1.0.10 / 1.0.11 Minor documentation updates
+
+### 1.0.9
+
+- Add Recipients List Endpoint
+
+### 1.0.8
+
+- Add Events Endpoint
 
 ### 1.0.6
 
